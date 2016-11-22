@@ -1,6 +1,6 @@
 // Rewrite/Rename when 'ext' keyword is implemented
 
 constants {
-    CB_OUTPUTPORT     = "socket://localhost:8000",
+    CB_OUTPUTPORT     = "",
     SERVICE_INPUTPORT = ""
 }
