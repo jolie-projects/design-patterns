@@ -12,4 +12,5 @@ Due to the way Jolie handles certain exceptions, these are not caught by the def
 
 ## TODOS
 
-When _ext_ keyword is implemented, make the circuit breaker generic so it can be added to a project, needing only modifications to a *CB_Config.col*-file.
+1. When _ext_ keyword is implemented, make the circuit breaker generic so it can be added to a project, needing only modifications to a *CB_Config.col*-file.
+2. Synchronize blocks that change CB-state to avoid race conditions.
