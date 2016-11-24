@@ -7,6 +7,7 @@ Running the circuit breaker can be accomplished by running *circuitbreaker.ol* a
 Current issues invovle exceptions including:
 
 Connection Reset By Peer
+java.net.SocketException: Invalid argument
 
 Due to the way Jolie handles certain exceptions, these are not caught by the default scope, which means failure haven't been produced when running the circuitbreaker, timeouts, however, has. These can occur when overloading the circuit breaker by continuous request (tested with about 750 requests at once), from where the circuit breaker has gone from Closed to Open, to Half-Open and back to Closed again for proper functionality.
 
