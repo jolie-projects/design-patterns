@@ -69,16 +69,18 @@ define cancelCallTO {
     cancelTimeout@Time( uuid )( )
 }
 
-define trip { global.state = OPEN; resetTO }
+define trip { global.state = OPEN; resetTO; println@Console( "Now OPEN" )() /* DELETE */ }
 
 define checkErrorRate
 {
     // check to see if statechange is necessary
-    if (global.state == CLOSED) {
-        shouldTrip@Stats()( shouldTrip );
-        if ( shouldTrip ) { trip }
-    } else if ( global.state == HALF_OPEN) {
-        trip
+    synchronized( stateToken ) {
+        if (global.state == CLOSED) {
+            shouldTrip@Stats()( shouldTrip );
+            if ( shouldTrip ) { trip }
+        } else if ( global.state == HALF_OPEN ) {
+            trip
+        }
     }
 }
 
@@ -112,18 +114,24 @@ main {
     }
 
     [ resetTO() ]  {
-        if ( global.state == OPEN )
-        {
-            reset@Stats(); global.state = HALF_OPEN;
-            scheduleTimeout@Time( resetTOval { .operation = "closeTO" } )()
+        synchronized( stateToken ) {
+            if ( global.state == OPEN )
+            {
+                reset@Stats(); global.state = HALF_OPEN;
+                println@Console( "Now HALF_OPEN ")(); // DELETE
+                scheduleTimeout@Time( resetTOval { .operation = "closeTO" } )()
+            }
         }
     }
 
     [ closeTO() ] {
         getStability@Stats( )( stable );
-        if (global.state == HALF_OPEN) {
-            if ( stable ) {
-                global.state = CLOSED
+        synchronized( stateToken ) {
+            if (global.state == HALF_OPEN) {
+                if ( stable ) {
+                    println@Console( "Now CLOSED" )(); // DELETE
+                    global.state = CLOSED
+                }
             }
         }
     }
